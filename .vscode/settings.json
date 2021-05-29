@@ -1,3 +1,9 @@
 {
-  "python.pythonPath": "/home/anirudh/.venv/remindr/bin/python"
+  "python.pythonPath": "/home/anirudh/.venv/remindr/bin/python",
+  "python.formatting.provider": "black",
+  "python.linting.flake8Enabled": true,
+  "python.linting.pylintEnabled": false,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python"
+  }
 }
