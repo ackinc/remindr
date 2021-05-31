@@ -6,6 +6,7 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    Table,
     Text,
 )
 from sqlalchemy.orm import declarative_base, relationship
@@ -13,6 +14,13 @@ from sqlalchemy.orm import declarative_base, relationship
 Base = declarative_base()
 
 # TODO: add a mixin for created_at, last_updated_at, and id
+
+users_channels_table = Table(
+    "users_channels",
+    Base.metadata,
+    Column("user_id", ForeignKey("users.id")),
+    Column("channel_id", ForeignKey("channels.id")),
+)
 
 
 # TODO: How do I implement "get all reminders sent to user x" efficiently?
@@ -23,14 +31,14 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
-    email = Column(String, nullable=False)  # TODO: add index
-    phone = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    phone = Column(String, unique=True)
     email_verified = Column(Boolean)
     phone_verified = Column(Boolean)
     refresh_token = Column(String)
     last_sync_at = Column(DateTime)
 
-    channels = relationship("Channel")
+    channels = relationship("Channel", secondary=users_channels_table)
     events = relationship("Event", back_populates="user")
     # TODO: add reminders (?)
 
@@ -46,9 +54,6 @@ class Channel(Base):
 
     def __repr__(self):
         return f"<Channel id={self.id} name={self.name}>"
-
-
-# TODO: add m2m relationship between users and channels
 
 
 class Event(Base):
@@ -92,4 +97,4 @@ class Log(Base):
     id = Column(Integer, primary_key=True)
     source = Column(String, nullable=False)
     reminder_id = Column(ForeignKey("reminders.id"))
-    details = Column(Text)  # TODO: should be JSONB
+    data = Column(Text)  # TODO: should be JSONB
