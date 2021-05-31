@@ -11,6 +11,7 @@ from sqlalchemy import (
     Table,
     Text,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import declarative_base, declarative_mixin, relationship
 
 
@@ -104,4 +105,4 @@ class Log(TimestampsMixin, Base):
     id = Column(Integer, primary_key=True)
     source = Column(String, nullable=False)
     reminder_id = Column(ForeignKey("reminders.id"))
-    data = Column(Text)  # TODO: should be JSONB
+    data = Column(JSONB)
