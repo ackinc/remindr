@@ -23,8 +23,10 @@ This will be a monorepo containing 2 sub-packages
 
 ## Side-quests
 
-- flake8 configuration
-- monorepo
-- sqlalchemy
+- configure flake8 and flake8-bugbear
+- should I make this a monorepo
+- sqlalchemy tutorial
 - mypy
-- queues in python
+- python modules/imports, particularly relative imports
+  - to get scripts/reset-db.py script to work, since it imports models.py
+- sqlalchemy: table inheritance (for logs table)
