@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import (
     Boolean,
     Column,
@@ -9,11 +11,19 @@ from sqlalchemy import (
     Table,
     Text,
 )
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base, declarative_mixin, relationship
+
 
 Base = declarative_base()
 
-# TODO: add a mixin for created_at, last_updated_at, and id
+
+@declarative_mixin
+class TimestampsMixin:
+    created_at = Column(DateTime, nullable=False, default=datetime.now)
+    last_updated_at = Column(
+        DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
+    )
+
 
 users_channels_table = Table(
     "users_channels",
@@ -23,9 +33,7 @@ users_channels_table = Table(
 )
 
 
-# TODO: How do I implement "get all reminders sent to user x" efficiently?
-#   Right now have to loop through user's events
-class User(Base):
+class User(TimestampsMixin, Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
@@ -40,13 +48,12 @@ class User(Base):
 
     channels = relationship("Channel", secondary=users_channels_table)
     events = relationship("Event", back_populates="user")
-    # TODO: add reminders (?)
 
     def __repr__(self):
         return f"<User id={self.id} first_name={self.first_name} email={self.email}>"
 
 
-class Channel(Base):
+class Channel(TimestampsMixin, Base):
     __tablename__ = "channels"
 
     id = Column(Integer, primary_key=True)
@@ -56,7 +63,7 @@ class Channel(Base):
         return f"<Channel id={self.id} name={self.name}>"
 
 
-class Event(Base):
+class Event(TimestampsMixin, Base):
     __tablename__ = "events"
 
     id = Column(Integer, primary_key=True)
@@ -72,7 +79,7 @@ class Event(Base):
         return f"<Event id={self.id} name={self.name}>"
 
 
-class Reminder(Base):
+class Reminder(TimestampsMixin, Base):
     __tablename__ = "reminders"
 
     id = Column(Integer, primary_key=True)
@@ -91,7 +98,7 @@ class Reminder(Base):
 # TODO: Rethink design
 #   Subject of log can be any of the other models, not just reminders
 #   Example: log by bg process that syncs users' calendar events every 10 mins
-class Log(Base):
+class Log(TimestampsMixin, Base):
     __tablename__ = "logs"
 
     id = Column(Integer, primary_key=True)
