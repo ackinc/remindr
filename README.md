@@ -26,4 +26,5 @@ This will be a monorepo containing 2 sub-packages
 - flake8 configuration
 - monorepo
 - sqlalchemy
+- mypy
 - queues in python
