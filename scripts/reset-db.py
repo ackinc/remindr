@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 project_dir = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(project_dir)
 
-from app.models import Base  # noqa: E402
+from app.models import Base  # noqa: E402 (imports at top of file)
 
 load_dotenv()
 
