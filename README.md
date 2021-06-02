@@ -30,3 +30,5 @@ This will be a monorepo containing 2 sub-packages
 - python modules/imports, particularly relative imports
   - to get scripts/reset-db.py script to work, since it imports models.py
 - sqlalchemy: table inheritance (for logs table)
+- migrations with alembic
+- [FUTURE] asyncio
