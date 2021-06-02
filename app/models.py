@@ -96,13 +96,23 @@ class Reminder(TimestampsMixin, Base):
         return f"<Reminder id={self.id}>"
 
 
-# TODO: Rethink design
-#   Subject of log can be any of the other models, not just reminders
-#   Example: log by bg process that syncs users' calendar events every 10 mins
 class Log(TimestampsMixin, Base):
     __tablename__ = "logs"
 
     id = Column(Integer, primary_key=True)
-    source = Column(String, nullable=False)
-    reminder_id = Column(ForeignKey("reminders.id"))
+    type = Column(String, nullable=False)
     data = Column(JSONB)
+
+    __mapper_args__ = {"polymorphic_identity": "log", "polymorphic_on": type}
+
+
+class EventsSyncLog(Log):
+    user_id = Column(ForeignKey("users.id"))
+
+    __mapper_args__ = {"polymorphic_identity": "events_sync_log"}
+
+
+class RemindersLog(Log):
+    reminder_id = Column(ForeignKey("reminders.id"))
+
+    __mapper_args__ = {"polymorphic_identity": "reminder_log"}
